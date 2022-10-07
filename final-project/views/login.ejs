@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <script>
+        const Login = async () =>{
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let response = await fetch('/users/login', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email,password}),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    //console.log('Success:', data);
+                    return data;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                console.log('1111response',response);
+                if(response.result =="ok"){
+                    location='/home';
+                }else{
+                    alert(response.msg);
+                }
+        }
+    </script>
+    <h1><%= title %></h1>
+    <input id="email" placeholder="email" value="giga@gmail.com" /><br/><br/>
+    <input id="password" placeholder="Password" type="password"  value="123"/><br/><br/>
+    <input onclick="Login()" type="button" value="Submit" /><br/><br/>
+    <button class="signup" onclick="location='/signup'">Create new Accaunt</button> &nbsp; &nbsp;
+
+  </body>
+</html>

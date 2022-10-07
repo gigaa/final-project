@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
+    <button onclick="location='/about'">About</button> &nbsp;| &nbsp;
+    <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
+    <hr/>
+    <script>
+        const doAdd = async () =>{
+            let id = ""
+            <% if(admin._id){ %> id = "<%= admin._id %>"<% } %>
+            let name = document.getElementById("name").value;
+            let phone = document.getElementById("phone").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let role = document.getElementById("select").value;
+
+            let response = await fetch('/api/admin', {
+                method: '<%= method %>', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({id,name,email,phone,password,role}),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    //console.log('Success:', data);
+                    return data;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                if(response.result =="ok"){
+                    location='/admin';
+                }else{
+                    alert(response.msg);
+                }
+        }
+    </script>
+    <input id="name" placeholder="Name" value="<%= admin.name %>" /><br/><br/>
+    <input id="email" placeholder="Email" value="<%= admin.email %>"/><br/><br/>
+    <input id="phone" placeholder="Phone" value="<%= admin.phone %>"/><br/><br/>
+    Role: 
+    <select id="select">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select><br/><br/>
+    <input id="password" placeholder="password" value="<%= admin.password %>" type="password"/><br/><br/>
+    <input onclick="doAdd()" type="button" value="<%= buttonName %>"  />
+    &nbsp;&nbsp; 
+    <input onclick="location='/admin'" type="button" value="Cancel"  />
+    <br/><br/>
+    
+  </body>
+</html>

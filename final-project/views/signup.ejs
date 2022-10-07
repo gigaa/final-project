@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
+    <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
+    <button onclick="location='/about'">About</button> &nbsp;| &nbsp;
+    <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
+    <hr/>
+    <script>
+        const Signup = async () =>{
+            let name = document.getElementById("name").value;
+            let phone = document.getElementById("phone").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+    
+            let response = await fetch('/users/signup', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({name,role:'user',email,phone,password,spaceUsed:0,spaceLimit:500}),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    //console.log('Success:', data);
+                    return data;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                if(response.result =="ok"){
+                    location='/home';
+                }else{
+                    alert(response.msg);
+                }
+        }
+    </script>
+    <input id="name" placeholder="Name" value="" /><br/><br/>
+    <input id="email" placeholder="Email" value=""/><br/><br/>
+    <input id="phone" placeholder="Phone" value=""/><br/><br/>
+    <input id="password" placeholder="password" type="password" value=""/><br/><br/>
+    <input onclick="Signup()" type="button" value="<%= buttonName %>"  />
+    &nbsp;&nbsp; 
+    <br/><br/>
+    
+  </body>
+</html>
