@@ -7,13 +7,12 @@
   <body>
     <h1><%= title %></h1>
     <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
-    <button onclick="location='/about'">About</button> &nbsp;| &nbsp;
+    <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
+    <button onclick="location='/document'">document</button> &nbsp;| &nbsp;
     <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
     <hr/>
     <script>
         const doAdd = async () =>{
-            let id = ""
-            <% if(admin._id){ %> id = "<%= admin._id %>"<% } %>
             let name = document.getElementById("name").value;
             let phone = document.getElementById("phone").value;
             let email = document.getElementById("email").value;
@@ -25,7 +24,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({id,name,email,phone,password,role}),
+                body: JSON.stringify({name,role,email,phone,password,spaceUsed:0,spaceLimit:500}),
                 })
                 .then((response) => response.json())
                 .then((data) => {

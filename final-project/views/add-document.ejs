@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
+    <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
+    <button onclick="location='/document'">document</button> &nbsp;| &nbsp;
+    <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
+    <hr/>
+    <script>
+        const doAdd = async () =>{
+            let name = document.getElementById("name").value;
+            let phone = document.getElementById("phone").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let role = document.getElementById("select").value;
+
+            let response = await fetch('/api/admin', {
+                method: '<%= method %>', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userId, tags,name, type, fileSize, access, fileLocation }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    //console.log('Success:', data);
+                    return data;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                if(response.result =="ok"){
+                    location='/admin';
+                }else{
+                    alert(response.msg);
+                }
+        }
+    </script>
+      Tag: 
+    <select id="tag">
+        <option value="art">art</option>
+        <option value="science">science</option>
+    </select><br/><br/>
+    <input id="name" placeholder="Name" value="<%= admin.name %>" /><br/><br/>
+    <input id="type" placeholder="type" value="<%= admin.type %>"/><br/><br/>
+    access: 
+    <select id="access">
+        <option value="public">public</option>
+        <option value="private">private</option>
+    </select><br/><br/>
+    <form action="/document" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploaded_file" />
+    </form><br/><br/>
+    <input onclick="doAdd()" type="button" value="<%= buttonName %>"  />
+    &nbsp;&nbsp; 
+    <input onclick="location='/admin'" type="button" value="Cancel"  />
+    <br/><br/>
+  </body>
+</html>
