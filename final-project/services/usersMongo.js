@@ -66,8 +66,8 @@ const loginUser = function (field, email, password) {
                 // console.log("==========password:" + result[0]['password']);
 
                 if ((email===result[0]['email']) && (password === result[0]['password'])) {
-                    resolve(1);
-                    // resolve(result);
+                    // resolve(1);
+                    resolve(result);
                 } else {
                     resolve(0)
 

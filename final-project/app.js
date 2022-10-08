@@ -9,7 +9,7 @@ var indexRouter = require('./routes/index');
 var secureRouter = require('./routes/secure-pages');
 var usersRouter = require('./routes/users');
 var apiUser = require('./routes/apiUser');
-var apiPerson = require('./routes/apiPerson');
+var apiDocument = require('./routes/apiDocument');
 var session = require('cookie-session')
 
 // cd customer-app-node
@@ -18,14 +18,7 @@ var session = require('cookie-session')
 var cors = require('cors');
 var app = express();
 app.use(cors());
-// const url = 'mongodb://udbgsu2v2gmoido3o49u:7Fw7CjDmyvJkEMcV5WSa@n1-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017,n2-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017/b0csomwptm1n3ow?replicaSet=rs0';
 
-// mongoose.connect(url,{
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }).then(() =>{
-//   console.log('DB Connected');
-// })
 
 var sess = {
   name:'customerapp2',
@@ -61,7 +54,7 @@ app.use('/users', usersRouter);
 
 app.use('/', secureRouter); //security
 app.use('/api/admin', apiUser);//security
-app.use('/api/person', apiPerson);//security
+app.use('/api/document', apiDocument);//security
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -13,18 +13,23 @@
     <hr/>
     <script>
         const doAdd = async () =>{
+            let tag = document.getElementById("tag").value;
             let name = document.getElementById("name").value;
-            let phone = document.getElementById("phone").value;
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-            let role = document.getElementById("select").value;
+            let type = document.getElementById("type").value;
+            let access = document.getElementById("access").value;
+            let userId = '<%= userId %>';
 
-            let response = await fetch('/api/admin', {
+            let response = await fetch('/api/document', {
                 method: '<%= method %>', // or 'PUT'
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userId, tags,name, type, fileSize, access, fileLocation }),
+                //type [doc,pdf,docx,mov] file extension
+                // access  [public,private]
+                // roles [admin,user ]
+                body: JSON.stringify({userId, tag,name,access }),
+                // body: JSON.stringify({userId, tag,name, type, fileSize:'', access, fileLocation:'' }),
+
                 })
                 .then((response) => response.json())
                 .then((data) => {
@@ -35,7 +40,7 @@
                     console.error('Error:', error);
                 });
                 if(response.result =="ok"){
-                    location='/admin';
+                    location='/document';
                 }else{
                     alert(response.msg);
                 }
@@ -46,19 +51,18 @@
         <option value="art">art</option>
         <option value="science">science</option>
     </select><br/><br/>
-    <input id="name" placeholder="Name" value="<%= admin.name %>" /><br/><br/>
-    <input id="type" placeholder="type" value="<%= admin.type %>"/><br/><br/>
+    <input id="name" placeholder="Name" value="<%= document.name %>" /><br/><br/>
     access: 
     <select id="access">
         <option value="public">public</option>
         <option value="private">private</option>
     </select><br/><br/>
-    <form action="/document" method="post" enctype="multipart/form-data">
+    <form action="/document/add" method="post" enctype="multipart/form-data">
         <input type="file" name="uploaded_file" />
     </form><br/><br/>
     <input onclick="doAdd()" type="button" value="<%= buttonName %>"  />
     &nbsp;&nbsp; 
-    <input onclick="location='/admin'" type="button" value="Cancel"  />
+    <input onclick="location='/document'" type="button" value="Cancel"  />
     <br/><br/>
   </body>
 </html>

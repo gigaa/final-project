@@ -30,10 +30,14 @@ router.get('/login', function(req, res, next) {
 router.post('/login', async function (req, res) {
   let result = await loginUser('email',req.body.email,req.body.password);
   console.log('++++++result ',result);
+  console.log('++++++_id ',result[0]['_id']);
+  res.cookie('userId',result[0]['_id'])
+
   if (result) {
     res.send({result:'ok',msg:'login success'});
   }else{
     res.send({result:'fail',msg:'login fail'});
+
   }
 })
 router.post('/signup', async function (req, res) {

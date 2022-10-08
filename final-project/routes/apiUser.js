@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express.Router();
-const {getUsers,addUser,updateUser,deleteUser,getUserById,getUsersBySearch} = require('../services/customerMongo');
+const {getUsers,addUser,updateUser,deleteUser,getUserById,getUsersBySearch} = require('../services/adminMongo');
 
   app.get('/', async function (req, res) {
     res.send(await getUsers());

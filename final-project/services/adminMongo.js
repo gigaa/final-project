@@ -22,19 +22,6 @@ const getUsers = function(){
   });
 };
 
-const getUserCallback = function(callback){ 
-  MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true},
-    function(err, client) {
-    assert.equal(null, err);
-    const db = client.db(dbName);
-      db.collection('users').find().toArray(function (err, result) {
-        if (err) throw err
-        console.log(result);
-        callback(result);
-      });
-    client.close();
-  });
-};
 
 const getUserById = function(id){
   return new Promise((resolve, reject) => {
@@ -119,19 +106,5 @@ const getUsersBySearch = function(field,searchText){
   });
 }
 
-// user 
-const signUp = function(record) {
-  return new Promise((resolve, reject) => {
-  MongoClient.connect(url, { useNewUrlParser: true,useUnifiedTopology: true },function(err, client) {
-    assert.equal(null, err);
-    const db = client.db(dbName);
-    const collection = db.collection('users');
-    collection.insertMany([record],function(err,result){
-      resolve({result:'success'});
-      client.close();
-    });
-    });
-  });
-}
 
 module.exports = {getUsers,addUser,updateUser,deleteUser,getUserById,getUsersBySearch};
