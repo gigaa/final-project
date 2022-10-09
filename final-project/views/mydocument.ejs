@@ -30,6 +30,15 @@
         });
       location = "/document";
     }
+    const doSearch = function(){
+        var searchText = document.getElementById("searchText").value;
+        var selectField = document.getElementById("select").value;
+        if(searchText == ""){
+          location = "/document";
+        }else{
+          location = "/document/search/"+selectField+"/"+searchText;
+        }
+    }
   </script>
 
   <h1><%= title %></h1>
@@ -39,7 +48,13 @@
   <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
   <hr />
   <button onclick="location='/document/add'">Add Document</button>
-  <button onclick="location='/document/all'">All Public Documents</button>
+  <button onclick="location='/document/all'">All Public Documents</button><br/><br/>
+  <input id="searchText" type="text" name="" placeholder="search text"> 
+  <select id="select">
+    <option value="name">Name</option>
+    <option value="access">Access</option>
+  </select>
+  <button onclick="doSearch()">Search</button>
   <br /><br />
   <h4>Total Count: <%= totalCount %></h4>
   <h4>Private Count: <%= privateCount %></h4>

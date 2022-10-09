@@ -3,7 +3,7 @@ var router = express.Router();
 var fs = require('fs');
 
 const {getUsers,getUserById,getUsersBySearch} = require('../services/adminMongo');
-const {getDocuments,getMyDocuments,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
+const {getDocuments,getMyDocuments,getDocumentBySearch,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
 
 router.get('/home', function(req, res, next) {
   res.render('index', { title: 'Home' });
@@ -14,7 +14,6 @@ router.get('/admin', async function(req, res, next) {
 });
 
 router.get('/admin/search/:field/:searchWord', async function(req, res, next) {
-
   res.render('admin', { title: 'admin', data:await getUsersBySearch(req.params.field,req.params.searchWord) });
 });
 
@@ -63,6 +62,10 @@ router.get('/document/edit/:id', async function(req, res, next) {
   const document = await getDocumentById(req.params.id);
   method="PUT";
   res.render('add-document', { title: 'Update Documents', buttonName:'Update',document,userId,method });
+});
+
+router.get('/document/search/:field/:searchWord', async function(req, res, next) {
+  res.render('mydocument', { title: 'My Document',totalCount:0,privateCount:0, data:await getDocumentBySearch(req.params.field,req.params.searchWord) });
 });
 
 router.post('/document/add', function(req, res, next) {
