@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <script>
+    const doEdit = (id) => {
+      location = '/document/edit/' + id;
+    }
+    const doDelete = async (id) => {
+      await fetch('/api/document', {
+          method: 'DELETE', // or 'PUT'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id
+          }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      location = "/document";
+    }
+  </script>
+
+  <h1><%= title %></h1>
+  <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
+  <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
+  <button onclick="location='/document'">document</button> &nbsp;| &nbsp;
+  <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
+  <hr />
+  <button onclick="location='/document/add'">Add Document</button>
+  <button onclick="location='/document/all'">All Public Documents</button>
+  <br /><br />
+  <h4>Total Count: <%= totalCount %></h4>
+  <h4>Private Count: <%= privateCount %></h4>
+
+  <div class="page-data">
+    <div class="data-table">
+      <table border="1" cellpadding="7" cellspacing="7">
+        <tr>
+          <th width="20px">No</th>
+          <th width="250px">Name</th>
+          <th width="250px">access</th>
+          <th width="220px">File</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <% if(data.length){for(var i = 0;i < data.length;i++) { %>
+        <tr>
+          <td><%=data[i]._id%></td>
+          <td><%=data[i].name%></td>
+          <td><%=data[i].access%></td>
+          <td><a href="<%=data[i].fileLocation%>" target="_blank"><%=data[i].fileLocation%></a> </td>
+          <td><button onclick="doEdit('<%=data[i]._id%>');">Edit</button></td>
+          <td><button onclick="doDelete('<%=data[i]._id %>');">Delete</button></td>
+        </tr>
+        <% }
+              }else{ %>
+        <tr>
+          <td colspan="7">No admin found</td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>

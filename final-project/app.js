@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
+var upload = require('express-fileupload')
 
 var indexRouter = require('./routes/index');
 var secureRouter = require('./routes/secure-pages');
@@ -18,6 +19,7 @@ var session = require('cookie-session')
 var cors = require('cors');
 var app = express();
 app.use(cors());
+app.use(upload());
 
 
 var sess = {
@@ -42,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use("/uploads", express.static("uploads"));
 
 // checkpoint
 // app.use(function(req,res,next){

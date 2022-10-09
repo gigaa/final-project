@@ -12,12 +12,31 @@
     <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
     <hr/>
     <script>
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
         const doAdd = async () =>{
             let tag = document.getElementById("tag").value;
             let name = document.getElementById("name").value;
-            let type = document.getElementById("type").value;
             let access = document.getElementById("access").value;
             let userId = '<%= userId %>';
+            let type = getCookie('type')
+            let fileLocation = getCookie('fileLocation')
+            let fileSize = getCookie('fileSize')
+
+            console.log({userId, tag,name,type,fileSize,access,fileLocation });
 
             let response = await fetch('/api/document', {
                 method: '<%= method %>', // or 'PUT'
@@ -27,7 +46,7 @@
                 //type [doc,pdf,docx,mov] file extension
                 // access  [public,private]
                 // roles [admin,user ]
-                body: JSON.stringify({userId, tag,name,access }),
+                body: JSON.stringify({userId, tag,name,type,fileSize,access,fileLocation }),
                 // body: JSON.stringify({userId, tag,name, type, fileSize:'', access, fileLocation:'' }),
 
                 })
@@ -47,19 +66,21 @@
         }
     </script>
       Tag: 
-    <select id="tag">
+    <select id="tag" value="<%= document.tag %>">
         <option value="art">art</option>
         <option value="science">science</option>
     </select><br/><br/>
     <input id="name" placeholder="Name" value="<%= document.name %>" /><br/><br/>
     access: 
-    <select id="access">
+    <select id="access" value="<%= document.access %>">
         <option value="public">public</option>
         <option value="private">private</option>
     </select><br/><br/>
     <form action="/document/add" method="post" enctype="multipart/form-data">
-        <input type="file" name="uploaded_file" />
-    </form><br/><br/>
+        <input type="file" name="file" />
+        <input type="submit" type="button" value="upload">
+    </form>
+    <br/><br/>
     <input onclick="doAdd()" type="button" value="<%= buttonName %>"  />
     &nbsp;&nbsp; 
     <input onclick="location='/document'" type="button" value="Cancel"  />
