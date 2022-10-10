@@ -68,16 +68,16 @@ const deleteUser = function(id){
   });
 };
 
-const updateUser = function(customer){
-  console.log("Custimer is ",customer);
+const updateUser = function(user){
+  console.log("user is ",user);
   return new Promise((resolve, reject) => {
-    let id = customer.id;
-    delete(customer.id);
+    let id = user.id;
+    delete(user.id);
     MongoClient.connect(url, { useNewUrlParser: true,useUnifiedTopology: true },function(err, client) {
     assert.equal(null, err);
     const db = client.db(dbName);
     const collection = db.collection('users');
-    collection.updateOne({"_id" : ObjectId(id)},{ $set: customer },function(err,result){
+    collection.updateOne({"_id" : ObjectId(id)},{ $set: user },function(err,result){
       resolve({result:'success'});
       client.close();
        });

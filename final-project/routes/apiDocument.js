@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express.Router();
-const {addDocument,getDocumentById,deleteDocument,updateDocument} = require('../services/documentMongo');
+const fs = require('fs')
+const {addDocument,getDocumentById,getfileLocation,deleteDocument,updateDocument} = require('../services/documentMongo');
 
 //   app.get('/', async function (req, res) {
 //     res.send(await getUsers());
@@ -24,7 +25,15 @@ const {addDocument,getDocumentById,deleteDocument,updateDocument} = require('../
   })
   
   app.delete('/', async (req, res) => {
+    let fileLocation= await getfileLocation({id:req.body.id});
     await deleteDocument({id:req.body.id});
+    console.log('apifileLocation',fileLocation);
+    try {
+      fs.unlinkSync(fileLocation)
+      //file removed
+    } catch(err) {
+      console.error(err)
+    }
     res.send({result:'ok',msg:'record deleted successfully'});
   })
 

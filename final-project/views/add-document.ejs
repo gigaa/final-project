@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
+</head>
+
+<body>
     <h1><%= title %></h1>
     <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
     <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
     <button onclick="location='/document'">document</button> &nbsp;| &nbsp;
     <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
-    <hr/>
+    <hr />
     <script>
         function getCookie(cname) {
             let name = cname + "=";
@@ -27,7 +29,9 @@
             }
             return "";
         }
-        const doAdd = async () =>{
+        const doAdd = async () => {
+            // e.preventdefault()
+            let id = '<%= document._id %>';
             let tag = document.getElementById("tag").value;
             let name = document.getElementById("name").value;
             let access = document.getElementById("access").value;
@@ -35,20 +39,23 @@
             let type = getCookie('type')
             let fileLocation = getCookie('fileLocation')
             let fileSize = getCookie('fileSize')
-
-            console.log({userId, tag,name,type,fileSize,access,fileLocation });
+            
+            console.log({
+                userId,
+                tag,
+                name,
+                type,
+                fileSize,
+                access,
+                fileLocation
+            });
 
             let response = await fetch('/api/document', {
-                method: '<%= method %>', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                //type [doc,pdf,docx,mov] file extension
-                // access  [public,private]
-                // roles [admin,user ]
-                body: JSON.stringify({userId, tag,name,type,fileSize,access,fileLocation }),
-                // body: JSON.stringify({userId, tag,name, type, fileSize:'', access, fileLocation:'' }),
-
+                    method: '<%= method %>', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },            
+                    body: JSON.stringify({id,userId, tag,name,type,fileSize,access,fileLocation }),
                 })
                 .then((response) => response.json())
                 .then((data) => {
@@ -58,32 +65,38 @@
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-                if(response.result =="ok"){
-                    location='/document';
-                }else{
-                    alert(response.msg);
-                }
+            if (response.result == "ok") {
+                location = '/document';
+                document.cookie="type=''"
+                document.cookie="fileLocation=''"
+                document.cookie="fileSize=''"
+            } else {
+                alert(response.msg);
+            }
         }
     </script>
-      Tag: 
-    <select id="tag" value="<%= document.tag %>">
-        <option value="art">art</option>
-        <option value="science">science</option>
-    </select><br/><br/>
-    <input id="name" placeholder="Name" value="<%= document.name %>" /><br/><br/>
-    access: 
-    <select id="access" value="<%= document.access %>">
-        <option value="public">public</option>
-        <option value="private">private</option>
-    </select><br/><br/>
-    <form action="/document/add" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" />
-        <input type="submit" type="button" value="upload">
+
+    <form action="/document/add" method="<%= method %>" enctype="multipart/form-data" onsubmit="doAdd()">
+        Tag:
+        <select id="tag" value="<%= document.tag %>">
+            <option value="art">art</option>
+            <option value="science">science</option>
+        </select><br /><br />
+        <input id="name" placeholder="Name" value="<%= document.name %>" /><br /><br />
+        access:
+        <select id="access" value="<%= document.access %>">
+            <option value="public">public</option>
+            <option value="private">private</option>
+        </select><br /><br />
+        <input type="file" name="file" /> <br /><br />
+        <input type="submit" type="button" value="<%= buttonName %>">&nbsp; | &nbsp;
+        <input onclick="location='/document'" type="button" value="Cancel" />
+        <br /><br />
     </form>
-    <br/><br/>
-    <input onclick="doAdd()" type="button" value="<%= buttonName %>"  />
-    &nbsp;&nbsp; 
-    <input onclick="location='/document'" type="button" value="Cancel"  />
-    <br/><br/>
-  </body>
+    <br /><br />
+    <!-- <input onclick="doAdd()" type="button" value="<%= buttonName %>"  /> -->
+    &nbsp;&nbsp;
+
+</body>
+
 </html>

@@ -19,7 +19,9 @@ var session = require('cookie-session')
 var cors = require('cors');
 var app = express();
 app.use(cors());
-app.use(upload());
+app.use(upload({
+  limits: { fileSize: 25 * 1024 * 1024 },
+}));
 
 
 var sess = {

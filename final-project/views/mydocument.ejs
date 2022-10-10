@@ -52,12 +52,15 @@
   <input id="searchText" type="text" name="" placeholder="search text"> 
   <select id="select">
     <option value="name">Name</option>
+    <option value="type">Type</option>
     <option value="access">Access</option>
+    <option value="tag">Tag</option>
   </select>
   <button onclick="doSearch()">Search</button>
   <br /><br />
   <h4>Total Count: <%= totalCount %></h4>
   <h4>Private Count: <%= privateCount %></h4>
+  <h4>Public Count: <%= publicCount %></h4>
 
   <div class="page-data">
     <div class="data-table">
@@ -66,7 +69,10 @@
           <th width="20px">No</th>
           <th width="250px">Name</th>
           <th width="250px">access</th>
+          <th width="250px">tag</th>
           <th width="220px">File</th>
+          <th width="220px">download</th>
+
           <th>Edit</th>
           <th>Delete</th>
         </tr>
@@ -75,7 +81,9 @@
           <td><%=data[i]._id%></td>
           <td><%=data[i].name%></td>
           <td><%=data[i].access%></td>
-          <td><a href="<%=data[i].fileLocation%>" target="_blank"><%=data[i].fileLocation%></a> </td>
+          <td><%=data[i].tag%></td>
+          <td><a href="<%=data[i].fileLocation%>" target="_blank" download><%=data[i].fileLocation%></a> </td>
+          <td><a href="<%=data[i].fileLocation%>"  download>download</a> </td>
           <td><button onclick="doEdit('<%=data[i]._id%>');">Edit</button></td>
           <td><button onclick="doDelete('<%=data[i]._id %>');">Delete</button></td>
         </tr>

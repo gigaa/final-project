@@ -25,6 +25,7 @@
           <th width="20px">No</th>
           <th width="250px">Name</th>
           <th width="250px">access</th>
+          <th width="250px">tag</th>
           <th width="220px">File</th>
         </tr>
         <% if(data.length){for(var i = 0;i < data.length;i++) { %>
@@ -32,6 +33,7 @@
           <td><%=data[i]._id%></td>
           <td><%=data[i].name%></td>
           <td><%=data[i].access%></td>
+          <td><%=data[i].tag%></td>
           <td><a href="<%=data[i].fileLocation%>" target="_blank"><%=data[i].fileLocation%></a> </td>
         </tr>
         <% }
