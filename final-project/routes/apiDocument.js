@@ -12,12 +12,12 @@ const {addDocument,getDocumentById,getfileLocation,deleteDocument,updateDocument
       res.send(await getDocumentById(req.params.id))
   })
   
-  app.post('/', async function (req, res) {
-    await addDocument(req.body);
-    res.send({result:'ok', msg:'record added successfully'});
-  })
+  // app.post('/add', async function (req, res) {
+  //   // await addDocument(req.body);
+  //   res.send({result:'ok', msg:'record added successfully'});
+  // })
   
-  app.put('/', async function (req, res) {
+  app.put('/edit/:id', async function (req, res) {
     const rec = req.body;
     console.log("rec ",rec);
     await updateDocument(rec);
@@ -27,7 +27,7 @@ const {addDocument,getDocumentById,getfileLocation,deleteDocument,updateDocument
   app.delete('/', async (req, res) => {
     let fileLocation= await getfileLocation({id:req.body.id});
     await deleteDocument({id:req.body.id});
-    console.log('apifileLocation',fileLocation);
+    // console.log('apifileLocation',fileLocation);
     try {
       fs.unlinkSync(fileLocation)
       //file removed

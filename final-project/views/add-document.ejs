@@ -8,9 +8,7 @@
 
 <body>
     <h1><%= title %></h1>
-    <button onclick="location='/home'">Home</button> &nbsp;| &nbsp;
-    <button onclick="location='/admin'">admin</button> &nbsp;| &nbsp;
-    <button onclick="location='/document'">document</button> &nbsp;| &nbsp;
+    <button onclick="location='<%= link %> '">document</button> &nbsp;| &nbsp;
     <button onclick="location='/login'">Logout</button> &nbsp;| &nbsp;
     <hr />
     <script>
@@ -29,6 +27,15 @@
             }
             return "";
         }
+        const doAddCooke =  () => {
+            let tag = document.getElementById("tag").value;
+            let name = document.getElementById("name").value;
+            let access = document.getElementById("access").value;
+            document.cookie=`tag=${tag}`
+            document.cookie=`name=${name}`
+            document.cookie=`access=${access}`
+        }
+
         const doAdd = async () => {
             // e.preventdefault()
             let id = '<%= document._id %>';
@@ -36,26 +43,26 @@
             let name = document.getElementById("name").value;
             let access = document.getElementById("access").value;
             let userId = '<%= userId %>';
-            let type = getCookie('type')
-            let fileLocation = getCookie('fileLocation')
-            let fileSize = getCookie('fileSize')
+            // let type = getCookie('type')
+            // let fileLocation = getCookie('fileLocation')
+            // let fileSize = getCookie('fileSize')
             
             console.log({
                 userId,
                 tag,
                 name,
-                type,
-                fileSize,
                 access,
-                fileLocation
+                // type,
+                // fileSize,
+                // fileLocation
             });
 
-            let response = await fetch('/api/document', {
+            let response = await fetch('/document/add', {
                     method: '<%= method %>', // or 'PUT'
                     headers: {
                         'Content-Type': 'application/json',
                     },            
-                    body: JSON.stringify({id,userId, tag,name,type,fileSize,access,fileLocation }),
+                    body: JSON.stringify({id,userId, tag,name,access }),
                 })
                 .then((response) => response.json())
                 .then((data) => {
@@ -76,7 +83,7 @@
         }
     </script>
 
-    <form action="/document/add" method="<%= method %>" enctype="multipart/form-data" onsubmit="doAdd()">
+    <form action="<%= action %>" method="<%= method %>" enctype="multipart/form-data" onsubmit="doAddCooke()">
         Tag:
         <select id="tag" value="<%= document.tag %>">
             <option value="art">art</option>
@@ -89,7 +96,7 @@
             <option value="private">private</option>
         </select><br /><br />
         <input type="file" name="file" /> <br /><br />
-        <input type="submit" type="button" value="<%= buttonName %>">&nbsp; | &nbsp;
+        <input type="submit" type="button" value="<%= buttonName %>" >&nbsp; | &nbsp;
         <input onclick="location='/document'" type="button" value="Cancel" />
         <br /><br />
     </form>

@@ -32,9 +32,11 @@ router.post('/login', async function (req, res) {
   console.log('++++++result ',result);
   console.log('++++++_id ',result[0]['_id']);
   res.cookie('userId',result[0]['_id'])
-
+  let role = result[0]['role'];
   if (result) {
-    res.send({result:'ok',msg:'login success'});
+    req.session.role = role;
+    console.log('req.session.role: '+req.session.role);
+    res.send({result:'ok',role,msg:'login success'});
   }else{
     res.send({result:'fail',msg:'login fail'});
 
@@ -42,6 +44,7 @@ router.post('/login', async function (req, res) {
 })
 router.post('/signup', async function (req, res) {
   await addUser(req.body);
+  req.session.role = 'user';
   res.send({result:'ok', msg:'record added successfully'});
 })
 

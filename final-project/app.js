@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
 var upload = require('express-fileupload')
+var bodyParser = require('body-parser')
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 var indexRouter = require('./routes/index');
 var secureRouter = require('./routes/secure-pages');
@@ -22,7 +24,13 @@ app.use(cors());
 app.use(upload({
   limits: { fileSize: 25 * 1024 * 1024 },
 }));
-
+// app.use(bodyParser.json());
+// app.use(bodyParser.json({ type: 'application/*+json' }))
+// app.use(urlencodedParser);
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded());
+// in latest body-parser use like below.
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var sess = {
   name:'customerapp2',
@@ -32,6 +40,8 @@ var sess = {
   resave: true,
   saveUninitialized: true
 }
+
+
 app.use(session(sess));
 
 // view engine setup
@@ -59,7 +69,8 @@ app.use("/uploads", express.static("uploads"));
 
 app.use('/', secureRouter); //security
 app.use('/api/admin', apiUser);//security
-app.use('/api/document', apiDocument);//security
+app.use('/document', apiDocument);//security
+app.use('/api/admin/document', apiDocument);//security
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

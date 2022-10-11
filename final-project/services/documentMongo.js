@@ -37,6 +37,21 @@ const getDocuments = function(field,searchText){
       });
   });
 }
+const getAllDocuments = function(){
+  return new Promise((resolve, reject) => {
+    var records = [];
+    MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
+    assert.equal(null, err);
+    const db = client.db(dbName);
+      db.collection('documents').find().toArray(function (err, result) {
+        if (err) throw err
+        console.log("result:"+JSON.stringify(result));
+        resolve(result);
+        client.close();
+         });
+      });
+  });
+}
 const getMyDocuments = function(field,searchText){
   return new Promise((resolve, reject) => {
     var records = [];
@@ -187,4 +202,4 @@ const getDocumentBySearch = function(field,searchText){
 }
 
 
-module.exports = {addDocument,getDocuments,getfileLocation,getMyDocumentsPublicCount,getMyDocuments,getDocumentById,deleteDocument,updateDocument,getDocumentBySearch,getMyDocumentsTotalCount,getMyDocumentsPrivateCount};
+module.exports = {addDocument,getDocuments,getfileLocation,getAllDocuments,getMyDocumentsPublicCount,getMyDocuments,getDocumentById,deleteDocument,updateDocument,getDocumentBySearch,getMyDocumentsTotalCount,getMyDocumentsPrivateCount};

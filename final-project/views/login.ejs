@@ -26,7 +26,13 @@
                 });
                 console.log('1111response',response);
                 if(response.result =="ok"){
-                    location='/home';
+                    // location='/home';
+                     if (response.role == 'admin') {
+                        location='/admin';
+                    }
+                    if (response.role == 'user') {
+                        location='/document';
+                    }
                 }else{
                     alert(response.msg);
                 }
