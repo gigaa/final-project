@@ -215,6 +215,7 @@ router.get('/document/all',authUser(), async function(req, res, next) {
 
 router.get('/document',authUser(),async function(req, res, next) {
   const userId=req.cookies.userId;
+  // console.log(userId);
   const totalCount = await getMyDocumentsTotalCount('userId',userId);
   const privateCount = await getMyDocumentsPrivateCount(userId);
   const publicCount = await getMyDocumentsPublicCount(userId);

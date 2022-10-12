@@ -90,11 +90,21 @@ const getMyDocumentsPrivateCount = function(id){
     MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
     assert.equal(null, err);
     const db = client.db(dbName);
+    const collection = db.collection('documents');
+    // let result=  collection.find({userId:  id } )
+    // resolve(result.length);
+    // console.log("presult:"+result.length)
+
     let result= db.collection('documents').countDocuments({access: "private"})
     //  let result=  db.collection('documents').aggregate( [ { $match: {access : "private"  } } ], { userId : ObjectId(id) } )
-      // console.log("presult:"+JSON.stringify(result))
+    //   console.log("presult:"+JSON.stringify(result))
       resolve(result);
-
+    // collection.find({userId:  id },{ access: { $eq: "private" } } ).toArray(function (err, result) {
+    //   if (err) throw err
+    //   console.log("getMyDocumentsPrivateCount:"+JSON.stringify(result.length))
+    //   resolve(result.length);
+    //   client.close();
+    // });
       });
   });
   
@@ -105,10 +115,22 @@ const getMyDocumentsPublicCount = function(id){
     MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
     assert.equal(null, err);
     const db = client.db(dbName);
+    const collection = db.collection('documents');
+    // let result= collection.find( {"userId" : ObjectId(id)} ).collation( { access: "public" } )
+
     let result= db.collection('documents').countDocuments({access: "public"})
-    //  let result=  db.collection('documents').aggregate( [ { $match: {access : "private"  } } ], { userId : ObjectId(id) } )
+    resolve(result);
       // console.log("presult:"+JSON.stringify(result))
-      resolve(result);
+    // let result= collection.find({"_id" : ObjectId(id)},{ access: { $eq: "public" } })
+    // console.log("ppppresult:"+result.length)
+    // resolve(result.length);
+
+      collection.find({userId:  ObjectId(id) },{ access: { $eq: "public" } } ).toArray(function (err, result) {
+        if (err) throw err
+        console.log("getMyDocumentsPublicCount:"+JSON.stringify(result.length))
+        resolve(result.length);
+        client.close();
+      });
 
       });
   });
