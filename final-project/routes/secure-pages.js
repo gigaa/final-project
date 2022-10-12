@@ -5,7 +5,7 @@ var fs = require('fs');
 var jsonParser = bodyParser.json()
 
 const {getUsers,getUserById,getUsersBySearch} = require('../services/adminMongo');
-const {addDocument,getDocuments,getMyDocuments,getMyDocumentsPublicCount,getAllDocuments,getDocumentBySearch,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
+const {addDocument,getfileLocation,getDocuments,updateDocument,getMyDocuments,getMyDocumentsPublicCount,getAllDocuments,getDocumentBySearch,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
 
 function authRole() {
   return (req, res, next) => {
@@ -54,62 +54,132 @@ router.get('/admin/document',authRole(), async function(req, res, next) {
   res.render('adminalldocumet', { title: 'All Documents',totalCount,privateCount,publicCount, data:await getAllDocuments() });
 });
 
-router.get('/admin/document/edit/:id',authRole(), async function(req, res, next) {
-  const userId=req.cookies.userId;
-  const document = await getDocumentById(req.params.id);
-  console.log('document',document);
-  res.cookie('type',document.type)
-  res.cookie('fileLocation',document.fileLocation)
-  res.cookie('fileSize',document.fileSize)
-  method="PUT";
-  res.render('add-document', { title: 'Update Documents',link: '/admin/document', buttonName:'Update',document,userId,method });
-});
 
 router.get('/admin/document/search/:field/:searchWord',authRole(), async function(req, res, next) {
   res.render('adminalldocumet', { title: 'My Document',totalCount:0,privateCount:0,publicCount:0, data:await getDocumentBySearch(req.params.field,req.params.searchWord) });
 });
+
 router.get('/admin/document/add',authRole(), function(req, res, next) {
   const document = {};
   method="POST";
   const userId=req.cookies.userId;
   console.log('userId========',userId);
-  res.render('add-document', { title: 'Add Document',link: '/admin/document', buttonName:'Add Document',document,userId,method});
+  res.render('add-document', { title: 'Add Document',action:'/admin/document/add',link: '/admin/document', buttonName:'Add Document',document,userId,method});
 });
-
-router.post('/admin/document/add',authRole(), function(req, res, next) {
+router.post('/admin/document/add',authRole(),async function(req, res, next) {
   const document = {};
   method="POST";
   const userId=req.cookies.userId;
+  // let body=req.body
+  console.log('body',req.body);
+
+  // let tag=req.body.tag;
+  // let name=req.body.name;
+  // let access=req.body.access;
+  let tag=req.cookies.tag;
+  let name=req.cookies.name;
+  let access=req.cookies.access;
+  console.log('before small',{userId, tag,name,access });
+
   if (req.files) {
     // console.log(req.files);
     var file = req.files.file
     var fileName = file.name
+    let filePath = `./uploads/${userId}/`
+
+    var file_name = new Date().getTime() +'_'+fileName;
+
     var type = file.mimetype
     var fileSize = file.size
+    let fileLocation =  `/uploads/${userId}/${file_name}`
+    console.log('before',{userId, tag,name,type,fileSize,access,fileLocation });
+    await addDocument({userId, tag,name,type,fileSize,access,fileLocation });
 
-    let filePath = `./uploads/${userId}/`
-    let fileLocation =  `/uploads/${userId}/${fileName}`
     console.log('============all',{fileLocation,type,fileSize});
 
     if (!fs.existsSync(filePath)){
       fs.mkdirSync(filePath);
     }
 
-    file.mv(`./uploads/${userId}/${fileName}`,function  (err) {
+    file.mv(`./uploads/${userId}/${file_name}`,function  (err) {
       if (err) {
         res.send(err)
       }else{
-        // res.send('File Uploaded')
-        res.render('add-document', { title: 'Add Document',link: '/admin/document', buttonName:'Add Document',document,userId,method});
-
+        res.redirect('/admin/document')
       }
     })
-    res.cookie('type',type)
-    res.cookie('fileLocation',fileLocation)
-    res.cookie('fileSize',fileSize)
   }
 });
 
+router.get('/admin/document/edit/:id',authRole(), async function(req, res, next) {
+  const userId=req.cookies.userId;
+  const id=req.params.id
+
+  const document = await getDocumentById(id);
+  console.log('document',document);
+  req.session.document = document;
+  // res.cookie('type',document.type)
+  // res.cookie('fileLocation',document.fileLocation)
+  // res.cookie('fileSize',document.fileSize)
+  method="POST";
+  res.render('add-document', { title: 'Update Documents',action:`/admin/document/edit/${id}`,link: '/admin/document', buttonName:'Update',document,userId,method });
+});
+
+router.post('/admin/document/edit/:id',authRole(), async function(req, res, next) {
+  const document = {};
+  method="POST";
+  // const userId=req.cookies.userId;
+  const userId=req.session.document.type;
+  const id=req.params.id
+
+  let tag=req.cookies.tag;
+  let name=req.cookies.name;
+  let access=req.cookies.access;
+
+  if (req.files) {
+    // console.log(req.files);
+    var file = req.files.file
+    var fileName = file.name
+    let filePath = `./uploads/${userId}/`
+
+    var file_name = new Date().getTime() +'_'+fileName;
+
+    var type = file.mimetype
+    var fileSize = file.size
+    let fileLocation =  `/uploads/${userId}/${file_name}`
+    console.log('before',{id,userId,tag,name,type,fileSize,access,fileLocation });
+    let fileLoc= await getfileLocation({id});
+    await updateDocument({ id,userId,tag,name,type,fileSize,access,fileLocation });
+    try {
+      fs.unlinkSync(fileLoc)
+      //file removed
+    } catch(err) {
+      console.error(err)
+    }
+    console.log('============all',{fileLocation,type,fileSize});
+
+    if (!fs.existsSync(filePath)){
+      fs.mkdirSync(filePath);
+    }
+
+    file.mv(`./uploads/${userId}/${file_name}`,function  (err) {
+      if (err) {
+        res.send(err)
+      }else{
+        res.redirect('/admin/document')
+      }
+    })
+  }else{
+    let type=req.session.document.type;
+    let fileSize=req.session.document.fileSize;
+    let fileLocation=req.session.document.fileLocation;
+    console.log('else',{id,userId,tag,name,type,fileSize,access,fileLocation });
+
+    await updateDocument({ id,userId,tag,name,type,fileSize,access,fileLocation });
+    res.redirect('/admin/document')
+
+  }
+});
 // ===========End Admin
 
 // user
@@ -135,13 +205,71 @@ router.get('/document',async function(req, res, next) {
 
 router.get('/document/edit/:id', async function(req, res, next) {
   const userId=req.cookies.userId;
-  const document = await getDocumentById(req.params.id);
+  const id=req.params.id
+
+  const document = await getDocumentById(id);
   console.log('document',document);
-  res.cookie('type',document.type)
-  res.cookie('fileLocation',document.fileLocation)
-  res.cookie('fileSize',document.fileSize)
-  method="PUT";
-  res.render('add-document', { title: 'Update Documents',action:'/document/edit/:id',link: '/document', buttonName:'Update',document,userId,method });
+  req.session.document = document;
+  // res.cookie('type',document.type)
+  // res.cookie('fileLocation',document.fileLocation)
+  // res.cookie('fileSize',document.fileSize)
+  method="POST";
+  res.render('add-document', { title: 'Update Documents',action:`/document/edit/${id}`,link: '/document', buttonName:'Update',document,userId,method });
+});
+
+router.post('/document/edit/:id',async function(req, res, next) {
+  const document = {};
+  method="POST";
+  const userId=req.cookies.userId;
+  const id=req.params.id
+
+  let tag=req.cookies.tag;
+  let name=req.cookies.name;
+  let access=req.cookies.access;
+
+  if (req.files) {
+    // console.log(req.files);
+    var file = req.files.file
+    var fileName = file.name
+    let filePath = `./uploads/${userId}/`
+
+    var file_name = new Date().getTime() +'_'+fileName;
+
+    var type = file.mimetype
+    var fileSize = file.size
+    let fileLocation =  `/uploads/${userId}/${file_name}`
+    console.log('before',{id,userId,tag,name,type,fileSize,access,fileLocation });
+    let fileLoc= await getfileLocation({id});
+    await updateDocument({ id,userId,tag,name,type,fileSize,access,fileLocation });
+    try {
+      fs.unlinkSync(fileLoc)
+      //file removed
+    } catch(err) {
+      console.error(err)
+    }
+    console.log('============all',{fileLocation,type,fileSize});
+
+    if (!fs.existsSync(filePath)){
+      fs.mkdirSync(filePath);
+    }
+
+    file.mv(`./uploads/${userId}/${file_name}`,function  (err) {
+      if (err) {
+        res.send(err)
+      }else{
+        res.redirect('/document')
+      }
+    })
+  }else{
+    let type=req.session.document.type;
+    let fileSize=req.session.document.fileSize;
+    let fileLocation=req.session.document.fileLocation;
+    console.log('else',{id,userId,tag,name,type,fileSize,access,fileLocation });
+
+    await updateDocument({ id,userId,tag,name,type,fileSize,access,fileLocation });
+    res.redirect('/document')
+
+  }
 });
 
 router.get('/document/search/:field/:searchWord', async function(req, res, next) {
@@ -195,15 +323,9 @@ router.post('/document/add',async function(req, res, next) {
       if (err) {
         res.send(err)
       }else{
-        // res.send('File Uploaded')
         res.redirect('/document')
-        // res.render('add-document', { title: 'Add Document',action:'/document/add',link: '/document', buttonName:'Add Document',document,userId,method});
-
       }
     })
-    // res.cookie('type',type)
-    // res.cookie('fileLocation',fileLocation)
-    // res.cookie('fileSize',fileSize)
   }
 });
 

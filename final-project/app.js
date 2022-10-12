@@ -22,7 +22,10 @@ var cors = require('cors');
 var app = express();
 app.use(cors());
 app.use(upload({
-  limits: { fileSize: 25 * 1024 * 1024 },
+  limits: {
+      fileSize: 25000000 //25mb
+  },
+  abortOnLimit: true
 }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.json({ type: 'application/*+json' }))

@@ -21,7 +21,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({name,role:'user',email,phone,password,spaceUsed:0,spaceLimit:500}),
+                body: JSON.stringify({name,role:'user',email,phone,password,spaceUsed:0,spaceLimit:50000000}),
                 })
                 .then((response) => response.json())
                 .then((data) => {

@@ -30,7 +30,7 @@ const getDocuments = function(field,searchText){
     const db = client.db(dbName);
       db.collection('documents').find({[field]:{'$regex' : searchText, '$options' : 'i'}}).toArray(function (err, result) {
         if (err) throw err
-        console.log("result:"+JSON.stringify(result));
+        // console.log("result:"+JSON.stringify(result));
         resolve(result);
         client.close();
          });
@@ -45,7 +45,7 @@ const getAllDocuments = function(){
     const db = client.db(dbName);
       db.collection('documents').find().toArray(function (err, result) {
         if (err) throw err
-        console.log("result:"+JSON.stringify(result));
+        // console.log("result:"+JSON.stringify(result));
         resolve(result);
         client.close();
          });
@@ -60,7 +60,7 @@ const getMyDocuments = function(field,searchText){
     const db = client.db(dbName);
       db.collection('documents').find({[field]:{'$regex' : searchText, '$options' : 'i'}}).toArray(function (err, result) {
         if (err) throw err
-        console.log("result:"+JSON.stringify(result));
+        // console.log("result:"+JSON.stringify(result));
         resolve(result);
         client.close();
          });
@@ -75,7 +75,7 @@ const getMyDocumentsTotalCount = function(field,searchText){
     const db = client.db(dbName);
       db.collection('documents').find({[field]:{'$regex' : searchText, '$options' : 'i'}}).toArray(function (err, result) {
         if (err) throw err
-        console.log("result:"+JSON.stringify(result.length));
+        // console.log("result:"+JSON.stringify(result.length));
         resolve(result.length);
         client.close();
          });
@@ -92,7 +92,7 @@ const getMyDocumentsPrivateCount = function(id){
     const db = client.db(dbName);
     let result= db.collection('documents').countDocuments({access: "private"})
     //  let result=  db.collection('documents').aggregate( [ { $match: {access : "private"  } } ], { userId : ObjectId(id) } )
-      console.log("presult:"+JSON.stringify(result))
+      // console.log("presult:"+JSON.stringify(result))
       resolve(result);
 
       });
@@ -107,7 +107,7 @@ const getMyDocumentsPublicCount = function(id){
     const db = client.db(dbName);
     let result= db.collection('documents').countDocuments({access: "public"})
     //  let result=  db.collection('documents').aggregate( [ { $match: {access : "private"  } } ], { userId : ObjectId(id) } )
-      console.log("presult:"+JSON.stringify(result))
+      // console.log("presult:"+JSON.stringify(result))
       resolve(result);
 
       });
@@ -117,13 +117,13 @@ const getMyDocumentsPublicCount = function(id){
 const getDocumentById = function(id){
   return new Promise((resolve, reject) => {
   var record = {};
-    console.log(">> getDocumentById "+ id);
+    // console.log(">> getDocumentById "+ id);
     MongoClient.connect(url,{ useNewUrlParser: true,useUnifiedTopology: true }, function(err, client) {
     assert.equal(null, err);
     const db = client.db(dbName);
       db.collection('documents').find({"_id" : ObjectId(id)}).toArray(function (err, result) {
         if (err) throw err
-        console.log(result);
+        // console.log(result);
         resolve(result[0]);
         client.close();
       });
@@ -139,7 +139,7 @@ const getfileLocation = function(id){
     collection.find({"_id" : ObjectId(id)}).toArray(function (err, result) {
       if (err) throw err
       const fileLocation ='.'+result[0].fileLocation
-      console.log('documents result: ',fileLocation);
+      // console.log('documents result: ',fileLocation);
     
       resolve(fileLocation);
       client.close();
@@ -164,7 +164,7 @@ const deleteDocument = function(id){
 };
 
 const updateDocument = function(customer){
-  console.log("Custimer is ",customer);
+  // console.log("Custimer is ",customer);
   return new Promise((resolve, reject) => {
     let id = customer.id;
     delete(customer.id);
@@ -185,15 +185,15 @@ const getDocumentBySearch = function(field,searchText){
     var records = [];
     //searhObject[searchParam.field] = "/"+searchParam.searchword+"/i";
     //console.log("search ==> "+JSON.stringify(searchParam));
-    console.log("field:"+field);
-    console.log("searchText:"+searchText);
+    // console.log("field:"+field);
+    // console.log("searchText:"+searchText);
 
     MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
     assert.equal(null, err);
     const db = client.db(dbName);
       db.collection('documents').find({[field]:{'$regex' : searchText, '$options' : 'i'}}).toArray(function (err, result) {
         if (err) throw err
-        console.log("result:"+JSON.stringify(result));
+        // console.log("result:"+JSON.stringify(result));
         resolve(result);
         client.close();
          });

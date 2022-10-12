@@ -7,22 +7,22 @@ const {addDocument,getDocumentById,getfileLocation,deleteDocument,updateDocument
 //     res.send(await getUsers());
 //   })
   
-  app.get('/:id', async function (req, res) {
-    console.log('id '+req.params.id);
-      res.send(await getDocumentById(req.params.id))
-  })
+  // app.get('/edit/:id', async function (req, res) {
+  //   console.log('id '+req.params.id);
+  //     res.send(await getDocumentById(req.params.id))
+  // })
   
   // app.post('/add', async function (req, res) {
   //   // await addDocument(req.body);
   //   res.send({result:'ok', msg:'record added successfully'});
   // })
   
-  app.put('/edit/:id', async function (req, res) {
-    const rec = req.body;
-    console.log("rec ",rec);
-    await updateDocument(rec);
-    res.send({result:'ok', msg:'record updated successfully'});
-  })
+  // app.put('/edit/:id', async function (req, res) {
+  //   const rec = req.body;
+  //   console.log("rec ",rec);
+  //   // await updateDocument(rec);
+  //   res.send({result:'ok', msg:'record updated successfully'});
+  // })
   
   app.delete('/', async (req, res) => {
     let fileLocation= await getfileLocation({id:req.body.id});
