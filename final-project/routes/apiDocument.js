@@ -25,7 +25,7 @@ const {addDocument,getDocumentById,getfileLocation,deleteDocument,updateDocument
   // })
   
   app.delete('/', async (req, res) => {
-    let fileLocation= await getfileLocation({id:req.body.id});
+    let fileLocation= await getfileLocation({id:req.body.id});  
     await deleteDocument({id:req.body.id});
     // console.log('apifileLocation',fileLocation);
     try {

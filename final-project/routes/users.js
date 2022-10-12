@@ -35,6 +35,7 @@ router.post('/login', async function (req, res) {
   let role = result[0]['role'];
   if (result) {
     req.session.role = role;
+    req.session.user = result;
     console.log('req.session.role: '+req.session.role);
     res.send({result:'ok',role,msg:'login success'});
   }else{
@@ -43,7 +44,8 @@ router.post('/login', async function (req, res) {
   }
 })
 router.post('/signup', async function (req, res) {
-  await addUser(req.body);
+  let result = await addUser(req.body);
+  req.session.user = result;
   req.session.role = 'user';
   res.send({result:'ok', msg:'record added successfully'});
 })

@@ -83,7 +83,7 @@
           <td><a href="<%=data[i].fileLocation%>" target="_blank"><%=data[i].fileLocation%></a> </td>
           <td><a href="<%=data[i].fileLocation%>"  download>download</a> </td>
           <td><button onclick="doEdit('<%=data[i]._id%>');">Edit</button></td>
-          <td><button onclick="doDelete('<%=data[i]._id %>');">Delete</button></td>
+          <td><button onclick="doDelete('<%=data[i]._id %>');" data-filesize="<%=data[i].fileSize %>">Delete</button></td>
         </tr>
         <% }
               }else{ %>
