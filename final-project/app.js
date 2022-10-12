@@ -6,7 +6,6 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 var upload = require('express-fileupload')
 var bodyParser = require('body-parser')
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 var indexRouter = require('./routes/index');
 var secureRouter = require('./routes/secure-pages');
