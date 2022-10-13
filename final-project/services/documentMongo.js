@@ -207,6 +207,38 @@ const getDocumentBySearch = function(field,searchText){
       });
   });
 }
+const getDocumentPublicBySearch = function(searchText){
+  return new Promise((resolve, reject) => {
+    var records = [];
+    MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
+    assert.equal(null, err);
+    const db = client.db(dbName);
+      // db.collection('users').find({['name']:{'$regex' : searchText, '$options' : 'i'}}).toArray(function (err, result) {
+      //   if (err) throw err
+      //   console.log("result:"+JSON.stringify(result[0]._id));
+      //   resolve(result[0]._id);
+      //   client.close();
+      // });
+      db.collection('documents').aggregate([
+        { $lookup:
+           {
+             from: 'users',
+             localField: '_id',
+             foreignField: 'userId',
+             as: 'documentdetails'
+           }
+         },
+        //  {access: "public"},
+        //  {name: searchText}
 
+        ]).toArray(function(err, res) {
+        if (err) throw err;
+        console.log('getDocumentPublicBySearch',JSON.stringify(res));
+        resolve(res);
+        client.close();
+      });
+      });
+  });
+}
 
-module.exports = {addDocument,getDocuments,getfileLocation,getAllDocuments,getMyDocumentsPublicCount,getMyDocuments,getDocumentById,deleteDocument,updateDocument,getDocumentBySearch,getMyDocumentsTotalCount,getMyDocumentsPrivateCount};
+module.exports = {addDocument,getDocuments,getfileLocation,getDocumentPublicBySearch,getAllDocuments,getMyDocumentsPublicCount,getMyDocuments,getDocumentById,deleteDocument,updateDocument,getDocumentBySearch,getMyDocumentsTotalCount,getMyDocumentsPrivateCount};

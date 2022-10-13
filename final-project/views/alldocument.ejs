@@ -25,6 +25,8 @@
           <th width="250px">access</th>
           <th width="250px">tag</th>
           <th width="220px">File</th>
+          <th width="220px">download</th>
+
         </tr>
         <% if(data.length){for(var i = 0;i < data.length;i++) { %>
         <tr>
@@ -33,6 +35,8 @@
           <td><%=data[i].access%></td>
           <td><%=data[i].tag%></td>
           <td><a href="<%=data[i].fileLocation%>" target="_blank"><%=data[i].fileLocation%></a> </td>
+          <td><a href="<%=data[i].fileLocation%>"  download>download</a> </td>
+
         </tr>
         <% }
               }else{ %>

@@ -6,7 +6,7 @@ var jsonParser = bodyParser.json()
 
 const {setStorigeSpaceUsed,getStorigeById} = require('../services/usersMongo');
 const {getUsers,getUserById,getUsersBySearch} = require('../services/adminMongo');
-const {addDocument,getfileLocation,getDocuments,updateDocument,getMyDocuments,getMyDocumentsPublicCount,getAllDocuments,getDocumentBySearch,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
+const {addDocument,getDocumentPublicBySearch,getfileLocation,getDocuments,updateDocument,getMyDocuments,getMyDocumentsPublicCount,getAllDocuments,getDocumentBySearch,getDocumentById,getMyDocumentsTotalCount,getMyDocumentsPrivateCount} = require('../services/documentMongo');
 
 function authAdmin() {
   return (req, res, next) => {
@@ -219,6 +219,8 @@ router.get('/document',authUser(),async function(req, res, next) {
   const totalCount = await getMyDocumentsTotalCount('userId',userId);
   const privateCount = await getMyDocumentsPrivateCount(userId);
   const publicCount = await getMyDocumentsPublicCount(userId);
+  const documentPublic = await getDocumentPublicBySearch('giga');
+
   
   res.render('mydocument', { title: 'My Documents',totalCount,privateCount,publicCount, data:await getMyDocuments('userId',userId) });
 });
