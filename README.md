@@ -14,3 +14,6 @@ Admin password: 123
 
 user : jim@gmail.com
 password: 123
+
+user : user@gmail.com
+password: 123
