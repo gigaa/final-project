@@ -88,23 +88,16 @@ const getMyDocumentsPrivateCount = function(id){
   return new Promise((resolve, reject) => {
     var records = [];
     MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
-    assert.equal(null, err);
-    const db = client.db(dbName);
-    const collection = db.collection('documents');
-    // let result=  collection.find({userId:  id } )
-    // resolve(result.length);
-    // console.log("presult:"+result.length)
+      assert.equal(null, err);
+      const db = client.db(dbName);
+      const collection = db.collection('documents');
+      collection.find({['userId']:{'$regex' : id, '$options' : 'i'},access: "private"}).toArray(function (err, result) {
+          if (err) throw err
+          console.log("result:"+JSON.stringify(result.length));
+          resolve(result.length);
+          client.close();
+      });
 
-    let result= db.collection('documents').countDocuments({access: "private"})
-    //  let result=  db.collection('documents').aggregate( [ { $match: {access : "private"  } } ], { userId : ObjectId(id) } )
-    //   console.log("presult:"+JSON.stringify(result))
-      resolve(result);
-    // collection.find({userId:  id },{ access: { $eq: "private" } } ).toArray(function (err, result) {
-    //   if (err) throw err
-    //   console.log("getMyDocumentsPrivateCount:"+JSON.stringify(result.length))
-    //   resolve(result.length);
-    //   client.close();
-    // });
       });
   });
   
@@ -113,26 +106,18 @@ const getMyDocumentsPublicCount = function(id){
   return new Promise((resolve, reject) => {
     var records = [];
     MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
-    assert.equal(null, err);
-    const db = client.db(dbName);
-    const collection = db.collection('documents');
-    // let result= collection.find( {"userId" : ObjectId(id)} ).collation( { access: "public" } )
+      assert.equal(null, err);
+      const db = client.db(dbName);
+      const collection = db.collection('documents');
 
-    let result= db.collection('documents').countDocuments({access: "public"})
-    resolve(result);
-      // console.log("presult:"+JSON.stringify(result))
-    // let result= collection.find({"_id" : ObjectId(id)},{ access: { $eq: "public" } })
-    // console.log("ppppresult:"+result.length)
-    // resolve(result.length);
-
-      collection.find({userId:  ObjectId(id) },{ access: { $eq: "public" } } ).toArray(function (err, result) {
+      collection.find({['userId']:{'$regex' : id, '$options' : 'i'},access: "public"}).toArray(function (err, result) {
         if (err) throw err
-        console.log("getMyDocumentsPublicCount:"+JSON.stringify(result.length))
+        console.log("result:"+JSON.stringify(result.length));
         resolve(result.length);
         client.close();
       });
 
-      });
+    });
   });
   
 };
